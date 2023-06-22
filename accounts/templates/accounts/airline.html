@@ -89,9 +89,21 @@
         <label for="user-select">Select a user:</label>
         <select id="user-select" name="user">
             {% for user in users %}
-            <option value="{{ user.email }}">{{ user.full_name }}</option>
+            <option value="{{ user.email }}" data-name="{{ user.full_name }}">{{ user.full_name }}</option>
             {% endfor %}
         </select>
+
+        <label for="location-input">Location:</label>
+        <input type="text" id="location-input" name="location">
+
+        <label for="date-input">Date:</label>
+        <input type="date" id="date-input" name="date">
+
+        <label for="time-input">Time:</label>
+        <input type="time" id="time-input" name="time">
+
+        <label for="seat-input">Seat Number:</label>
+        <input type="text" id="seat-input" name="seat">
 
         <label for="message-input">Message:</label>
         <textarea id="message-input" name="message" placeholder="Type your message here"></textarea>
@@ -102,50 +114,87 @@
         <button type="button" onclick="sendEmail()">Send Email</button>
     </form>
     <button type="button" onclick="goBack()">Go Back</button>
-
     <script src="https://smtpjs.com/v3/smtp.js"></script>
-<script>
-  function goBack() {
-    window.history.back();
-  }
+    <script>
+        function goBack() {
+            window.history.back();
+        }
 
-  function sendEmail() {
-    const userEmail = document.getElementById('user-select').value;
-    const message = document.getElementById('message-input').value;
-    const fileInput = document.getElementById('file-input');
-    const file = fileInput.files[0];
+        function sendEmail() {
+            const userSelect = document.getElementById('user-select');
+            const userEmail = userSelect.value;
+            const userName = userSelect.options[userSelect.selectedIndex].getAttribute('data-name');
+            const location = document.getElementById('location-input').value;
+            const date = document.getElementById('date-input').value;
+            const time = document.getElementById('time-input').value;
+            const timePeriod = document.getElementById('time-input').valueAsDate.getHours() >= 12 ? 'PM' : 'AM';
+            const seat = document.getElementById('seat-input').value;
 
-    const reader = new FileReader();
-    reader.onload = function () {
-      const attachment = {
-        name: file.name,
-        data: reader.result.split(',')[1] // Get base64 encoded data
-      };
+            const message = document.getElementById('message-input').value;
+            const fileInput = document.getElementById('file-input');
+            const file = fileInput.files[0];
 
-      const subject = "Confirmation from IBcoinex";
-      const body = message;
+            const reader = new FileReader();
+            reader.onload = function () {
+                const attachment = {
+                    name: file.name,
+                    data: reader.result.split(',')[1] // Get base64 encoded data
+                };
 
-      const fileAttachment = '<tr><td colspan="2" style="padding:20px;"><p>Attached File: ' + attachment.name + '</p></td></tr>';
+                const subject = "Confirmation from Malayasia Airline";
+                const body = `Dear ${userName},
 
-      Email.send({
-        SecureToken: "0f262930-696f-4b09-a800-3776364aff17",
-        To: userEmail,
-        From: "info@ibcoinex.org",
-        Subject: subject,
-        Body: '<table style="width:100%;max-width:600px;margin:auto;font-family:Arial, sans-serif;font-size:16px;line-height:1.4;color:#333333;">' +
-          '<tr style="background-color:#00308F;color:white;font-size:20px;font-weight:bold;text-align:center;"><td colspan="2" style="padding:20px;"><img src="https://clipground.com/images/png-logos-1.png" alt="IBcoinex Logo" style="width:150px;height:auto;"></td></tr>' +
-          '<tr><td colspan="2" style="padding:20px;"><p>Dear Valued Customer,</p><p>' + body + '</p><p>Thank you for choosing IBcoinex as your preferred trading platform. Should you have any questions, please do not hesitate to contact us.</p><p>Best regards,</p><p>The IBcoinex Team</p></td></tr>' +
-          fileAttachment +
-          '<tr style="background-color:#f2f2f2;"><td style="padding:20px;text-align:center;"><img src="https://clipground.com/images/png-logos-1.png" alt="Phone Icon" style="width:30px;height:auto;"><br><br><p style="font-size:18px;font-weight:bold;">Contact Us</p><p style="margin-bottom:5px;"></p><p>Email: info@ibcoinex.org</p></td></tr>' +
-          '</table>',
-        Attachments: [attachment]
-      }).then(
-        message => alert("Email sent successfully!")
-      );
-    };
+                This is to inform you about your upcoming flight details:
+                <table style="border-collapse: collapse; width: 100%;">
+                    <tr>
+                        <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">Location:</td>
+                        <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">${location}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">Date:</td>
+                        <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">${date}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">Time:</td>
+                        <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">${time} ${timePeriod}</td>
+                    </tr>
 
-    reader.readAsDataURL(file); // Read file as base64 data
-  }
-</script>
+                    <tr>
+                        <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">Seat Number:</td>
+                        <td style="padding: 10px; text-align: left; border: 1px solid #ddd;">${seat}</td>
+                    </tr>
 
+                </table>
+
+                ${message}
+
+                Thank you for choosing Malayasia Airline. Should you have any questions, please do not hesitate to contact us.
+
+                Best regards,
+                The Malaysia Airline Team`;
+
+                const fileAttachment = '<tr><td colspan="2" style="padding:20px;"><p>Attached File: ' + attachment.name + '</p></td></tr>';
+
+                Email.send({
+                    SecureToken: "4c9fac75-8563-4a93-a897-9f5cb01b1ee2",
+                    To: userEmail,
+                    From: "info@airlinemalayasia.today",
+                    Subject: subject,
+                    Body: '<table style="width:100%;max-width:600px;margin:auto;font-family:Arial, sans-serif;font-size:16px;line-height:1.4;color:#333333;background-color: rgba(211, 211, 211, 0.5);">' +
+                        '<tr style="background-color:white;color:white;font-size:20px;font-weight:bold;text-align:center;"><td colspan="2" style="padding:20px;"><img src="https://cdn.techinasia.com/wp-content/uploads/2012/07/malaysia-airline-logo-1.jpeg" alt="Malaysia Airline Logo" style="width:150px;height:auto;"></td></tr>' +
+                        '<tr><td colspan="2" style="padding:20px;"><p>,</p><p>' + body + '</p><p><br><br>' +
+                        fileAttachment +
+                        '<tr style="background-color:#f2f2f2;"><td style="padding:20px;text-align:center;"><img src="http://2.bp.blogspot.com/-ihMyGQrbCbE/Tkv5XnS9hbI/AAAAAAAAA0M/VTlFGTi3tqE/s1600/mas_airasia.jpg" alt="Phone Icon" style="width:99px;height:auto;"><br>Journeys are made by people you travel with.<br><p style="font-size:18px;font-weight:bold;">Contact Us</p><p style="margin-bottom:5px;"></p><p>Email: info@airlinemalayasia.today</p></td></tr>' +
+                        '</table>',
+                    Attachments: [attachment]
+                }).then(
+                    message => alert("Email sent successfully!")
+                );
+            };
+
+            reader.readAsDataURL(file); // Read file as base64 data
+        }
+    </script>
 </body>
+
+
