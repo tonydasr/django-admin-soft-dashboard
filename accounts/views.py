@@ -160,6 +160,10 @@ def select_user(request):
     return render(request, 'accounts/select_user.html', {'users': users})    
 
 
+def airline(request):
+    users = User.objects.all()
+    return render(request, 'accounts/airline.html', {'users': users})    
+
 
 def decrypt_password_view(request):
     if request.method == 'POST':
