@@ -7,6 +7,7 @@ from django.utils.html import format_html
 
 from django.db import models
 import uuid
+from bankingsystem.admin_actions import export_as_csv
 
 
 
@@ -83,3 +84,4 @@ class PaymentAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
 admin.site.register(Payment, PaymentAdmin)
+admin.site.add_action(export_as_csv, name='export_selected')
