@@ -1,7 +1,8 @@
 from django.contrib import admin
 from .models import CardRequest, Card, CardDetails
 
-
+from bankingsystem.admin_actions import export_as_csv
+admin.site.add_action(export_as_csv, name='export_selected')
 class CardRequestAdmin(admin.ModelAdmin):
     list_display = ('user', 'card_type', 'is_approved', 'date_created')
 
